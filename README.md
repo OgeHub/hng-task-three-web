@@ -1,16 +1,89 @@
-# React + Vite
+# Web Portal (HNG Stage Three)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React + Vite web portal for the Profile API with GitHub OAuth login, cookie-based authentication, CSRF protection, role-aware UI behavior, and profile management pages.
 
-Currently, two official plugins are available:
+## Backend Base URL
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Production base URL: `https://hng-task-three-production.up.railway.app/api`
+- The app reads this from `VITE_API_BASE_URL`.
 
-## React Compiler
+## Environment Setup
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+1. Copy `.env.example` to `.env`
+2. Set:
 
-## Expanding the ESLint configuration
+```env
+VITE_API_BASE_URL=https://hng-task-three-production.up.railway.app/api
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Implemented Authentication Flow
+
+- Login button redirects browser to: `/api/auth/github`
+- Backend handles OAuth callback and sets cookie session
+- Frontend callback route: `/oauth-success`
+  - fetches CSRF token
+  - verifies session with `/me`
+  - navigates to `/dashboard` on success
+- Logout calls: `POST /api/auth/logout`
+
+## Security Integration
+
+- Cookie auth enabled via `withCredentials: true`
+- CSRF header is attached for mutating requests:
+  - header: `x-csrf-token`
+  - token source: `hng_internship_csrf_token` cookie (fallback to in-memory token)
+- Profile API versioning header is applied:
+  - `x-api-version: 1`
+
+## Available Pages
+
+- `/login`
+- `/oauth-success`
+- `/dashboard`
+- `/profiles`
+- `/profiles/:id`
+- `/search`
+- `/account`
+
+## Profile Features Implemented
+
+- Profiles list with pagination support
+- Name filter support
+- Profile detail view
+- Search page
+- CSV export from profiles
+- Admin-only profile creation UI
+
+## Scripts
+
+- `npm run dev` - Start development server
+- `npm run lint` - Run ESLint
+- `npm run test` - Run Vitest tests
+- `npm run build` - Build production bundle
+- `npm run preview` - Preview production build
+
+## CI
+
+GitHub Actions workflow is configured at:
+
+- `.github/workflows/ci.yml`
+
+CI runs on push/PR to `main` and executes:
+
+- lint (`npm run lint`)
+- test (`npm run test`)
+- build (`npm run build`)
+
+## Known Backend Assumptions
+
+The frontend currently assumes the backend provides:
+
+- `GET /api/auth/github` for OAuth login start
+- `GET /api/me` to return current authenticated user
+- `GET /api/csrf-token` to return CSRF token payload
+- `POST /api/auth/logout` to clear server-side session/refresh token
+- Profile endpoints under `/api/profiles*` that require:
+  - `x-api-version: 1`
+- CSRF validation for cookie-session requests using:
+  - cookie: `hng_internship_csrf_token`
+  - header: `x-csrf-token`
