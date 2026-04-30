@@ -1,13 +1,18 @@
 import api, { BACKEND_BASE_URL } from "./axios";
 
 const pickUser = (res) => res?.data?.data || res?.data || null;
+const VERSION_HEADER = { "x-api-version": "1" };
 
 export const getCurrentUser = async () => {
   try {
-    const res = await api.get("/me");
+    const res = await api.get("/me", {
+      headers: VERSION_HEADER,
+    });
     return pickUser(res);
   } catch {
-    const res = await api.get("/users/me");
+    const res = await api.get("/users/me", {
+      headers: VERSION_HEADER,
+    });
     return pickUser(res);
   }
 };
