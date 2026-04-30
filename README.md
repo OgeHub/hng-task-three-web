@@ -18,13 +18,13 @@ VITE_API_BASE_URL=https://hng-task-three-production.up.railway.app/api
 
 ## Implemented Authentication Flow
 
-- Login button redirects browser to: `/api/auth/github`
+- Login button redirects browser to: `/auth/github`
 - Backend handles OAuth callback and sets cookie session
 - Frontend callback route: `/oauth-success`
   - fetches CSRF token
   - verifies session with `/me`
   - navigates to `/dashboard` on success
-- Logout calls: `POST /api/auth/logout`
+- Logout calls: `POST /auth/logout`
 
 ## Security Integration
 
@@ -78,10 +78,10 @@ CI runs on push/PR to `main` and executes:
 
 The frontend currently assumes the backend provides:
 
-- `GET /api/auth/github` for OAuth login start
+- `GET /auth/github` for OAuth login start
 - `GET /api/me` to return current authenticated user
 - `GET /api/csrf-token` to return CSRF token payload
-- `POST /api/auth/logout` to clear server-side session/refresh token
+- `POST /auth/logout` to clear server-side session/refresh token
 - Profile endpoints under `/api/profiles*` that require:
   - `x-api-version: 1`
 - CSRF validation for cookie-session requests using:

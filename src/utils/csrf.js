@@ -1,4 +1,4 @@
-import api from "../api/axios";
+import { fetchAuthCsrfToken } from "../api/auth";
 
 let csrfToken = null;
 let csrfPromise = null;
@@ -8,11 +8,10 @@ export const fetchCSRFToken = async () => {
   if (csrfToken) return csrfToken;
   if (csrfPromise) return csrfPromise;
 
-  csrfPromise = api
-    .get("/csrf-token")
-    .then((res) => {
-      csrfToken = res.data?.csrfToken || null;
-      return csrfToken;
+  csrfPromise = fetchAuthCsrfToken()
+    .then((token) => {
+      csrfToken = token;
+      return token;
     })
     .finally(() => {
       csrfPromise = null;

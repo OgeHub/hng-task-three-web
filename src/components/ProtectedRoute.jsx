@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import api from "../api/axios";
+import { getCurrentUser } from "../api/auth";
 
 export default function ProtectedRoute({ children }) {
   const [user, setUser] = useState(undefined);
 
   useEffect(() => {
-    api.get("/me")
-      .then((res) => setUser(res.data?.data || res.data))
+    getCurrentUser()
+      .then((me) => setUser(me))
       .catch(() => setUser(null));
   }, []);
 

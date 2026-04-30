@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../api/axios";
+import { getCurrentUser } from "../api/auth";
 import { fetchCSRFToken } from "../utils/csrf";
 
 export default function OAuthSuccess() {
@@ -10,7 +10,7 @@ export default function OAuthSuccess() {
     const verifyLogin = async () => {
       try {
         await fetchCSRFToken();
-        await api.get("/me");
+        await getCurrentUser();
         navigate("/dashboard");
       } catch {
         navigate("/login");

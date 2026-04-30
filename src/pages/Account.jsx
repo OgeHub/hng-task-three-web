@@ -1,17 +1,14 @@
 import { useEffect, useState } from "react";
-import api from "../api/axios";
+import { getCurrentUser } from "../api/auth";
 
 export default function Account() {
   const [user, setUser] = useState(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    api
-      .get("/me")
-      .then((res) => setUser(res.data?.data || res.data))
-      .catch((err) =>
-        setError(err.response?.data?.message || "Failed to load account details.")
-      );
+    getCurrentUser()
+      .then((me) => setUser(me))
+      .catch((err) => setError(err.response?.data?.message || "Failed to load account details."));
   }, []);
 
   if (error) return <p style={{ color: "crimson" }}>{error}</p>;

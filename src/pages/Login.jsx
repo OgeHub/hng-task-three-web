@@ -1,9 +1,9 @@
 // src/pages/Login.jsx
-import { API_BASE_URL } from "../api/axios";
+import { BACKEND_BASE_URL } from "../api/axios";
 
 export default function Login() {
   const loginWithGitHub = () => {
-    window.location.href = `${API_BASE_URL}/auth/github`;
+    window.location.href = `${BACKEND_BASE_URL}/auth/github`;
   };
 
   return (

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import api from "../api/axios";
-import { createProfile, exportProfilesCsv, getProfiles } from "../api/profiles";
+import { getCurrentUser } from "../api/auth";
+import { createProfile, deleteProfile, exportProfilesCsv, getProfiles } from "../api/profiles";
 
 export default function Profiles() {
   const [profiles, setProfiles] = useState([]);
@@ -43,11 +43,9 @@ export default function Profiles() {
   }, [filters.page, filters.limit, filters.name]);
 
   useEffect(() => {
-    api
-      .get("/me")
-      .then((res) => {
-        const me = res.data?.data || res.data || {};
-        setUserRole(me.role || "analyst");
+    getCurrentUser()
+      .then((me) => {
+        setUserRole(me?.role || "analyst");
       })
       .catch(() => setUserRole("analyst"));
   }, []);
@@ -103,6 +101,16 @@ export default function Profiles() {
     }
   };
 
+  const handleDelete = async (id) => {
+    try {
+      setError("");
+      await deleteProfile(id);
+      await loadProfiles();
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to delete profile.");
+    }
+  };
+
   return (
     <div>
       <h2>Profiles List</h2>
@@ -138,6 +146,14 @@ export default function Profiles() {
           {profiles.map((profile) => (
             <li key={profile.id}>
               <Link to={`/profiles/${profile.id}`}>{profile.name}</Link>
+              {userRole === "admin" && (
+                <button
+                  style={{ marginLeft: "8px" }}
+                  onClick={() => handleDelete(profile.id)}
+                >
+                  Delete
+                </button>
+              )}
             </li>
           ))}
         </ul>

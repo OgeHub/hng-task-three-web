@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import api from "../api/axios";
+import { getCurrentUser } from "../api/auth";
 import { getProfiles } from "../api/profiles";
 
 export default function Dashboard() {
@@ -17,10 +17,10 @@ export default function Dashboard() {
       try {
         setError("");
         const [meRes, profilesRes] = await Promise.all([
-          api.get("/me"),
+          getCurrentUser(),
           getProfiles({ page: 1, limit: 1 }),
         ]);
-        const me = meRes.data?.data || meRes.data || {};
+        const me = meRes || {};
 
         setStats({
           totalProfiles: profilesRes.total || 0,
