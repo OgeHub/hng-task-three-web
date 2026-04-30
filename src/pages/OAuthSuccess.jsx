@@ -9,8 +9,9 @@ export default function OAuthSuccess() {
   useEffect(() => {
     const verifyLogin = async () => {
       try {
-        await fetchCSRFToken();
         await getCurrentUser();
+        // CSRF bootstrap should not block successful login navigation.
+        void fetchCSRFToken().catch(() => {});
         navigate("/dashboard");
       } catch {
         navigate("/login");
