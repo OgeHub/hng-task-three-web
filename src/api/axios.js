@@ -1,8 +1,12 @@
 import axios from "axios";
 import { getCSRFToken } from "../utils/csrf";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-const BACKEND_BASE_URL = API_BASE_URL.replace(/\/api\/?$/, "");
+const normalizeUrl = (value) => (typeof value === "string" ? value : "").replace(/\/+$/, "");
+const stripTrailingApi = (value = "") => normalizeUrl(value).replace(/\/api$/, "");
+
+const API_BASE_URL = normalizeUrl(import.meta.env.VITE_API_BASE_URL);
+const AUTH_BASE_URL = normalizeUrl(import.meta.env.VITE_AUTH_BASE_URL) || stripTrailingApi(API_BASE_URL);
+const BACKEND_BASE_URL = AUTH_BASE_URL;
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -50,4 +54,4 @@ api.interceptors.response.use(
 );
 
 export default api;
-export { API_BASE_URL, BACKEND_BASE_URL };
+export { API_BASE_URL, AUTH_BASE_URL, BACKEND_BASE_URL };
