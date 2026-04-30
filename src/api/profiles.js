@@ -34,9 +34,16 @@ export const createProfile = async (payload) => {
 
 export const exportProfilesCsv = async (params = {}) => {
   const res = await api.get("/profiles/export", {
-    params: { ...params, format: "csv" },
+    params,
     headers: VERSION_HEADER,
     responseType: "blob",
   });
   return res;
+};
+
+export const deleteProfile = async (id) => {
+  const res = await api.delete(`/profiles/${id}`, {
+    headers: VERSION_HEADER,
+  });
+  return res.data;
 };

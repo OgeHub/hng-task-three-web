@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
-import api from "../api/axios";
+import { logoutSession } from "../api/auth";
 
 export default function Navbar() {
   const handleLogout = async () => {
     try {
-      await api.post("/auth/logout");
+      await logoutSession();
     } finally {
       window.location.href = "/login";
     }
