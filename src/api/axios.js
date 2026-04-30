@@ -50,7 +50,7 @@ api.interceptors.response.use(
     ) {
       originalRequest._retry = true;
       try {
-        await api.post(`${BACKEND_BASE_URL}/auth/refresh`);
+        await api.post(`${BACKEND_BASE_URL}/auth/refresh`, {});
         return api(originalRequest);
       } catch {
         return Promise.reject(error);
